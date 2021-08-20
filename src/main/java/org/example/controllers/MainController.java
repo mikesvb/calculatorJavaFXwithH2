@@ -62,7 +62,7 @@ public class MainController {
             session.getSessionFactory().openSession();
 
             List<Expression> stringHistories = session.createQuery("from Expression order by dateAddString desc", Expression.class).list();
-            System.out.println(stringHistories.size());
+
             if(stringHistories.size()>10) {
                 Transaction tx = null;
                 try {
@@ -300,7 +300,7 @@ public class MainController {
                     textMonitor.setText(textMonitor.getText() + action);
                 }
             }
-            System.out.println(flagFirstOperation);
+
             if(flagFirstOperation ){
                 flagFirstOperation=false;
                 result=preResult;
@@ -319,13 +319,31 @@ public class MainController {
                             }
                             break;
                         case "-":
-                            result = result - preResult;
+                            if (action.equals("%")) {
+                                result = result - (result / 100) * preResult;
+                                textMonitor.setText(textMonitor.getText() + "=");
+                                stringInputNumber.append("=");
+                            } else {
+                                result = result - preResult;
+                            }
                             break;
                         case "*":
-                            result = result * preResult;
+                            if (action.equals("%")) {
+                                result = result * (result / 100) * preResult;
+                                textMonitor.setText(textMonitor.getText() + "=");
+                                stringInputNumber.append("=");
+                            } else {
+                                result = result * preResult;
+                            }
                             break;
                         case "/":
-                            result = result / preResult;
+                            if (action.equals("%")) {
+                                result = result / (result / 100) * preResult;
+                                textMonitor.setText(textMonitor.getText() + "=");
+                                stringInputNumber.append("=");
+                            } else {
+                                result = result / preResult;
+                            }
                             break;
                         case "x^":
                             result = Math.pow(result, preResult);
