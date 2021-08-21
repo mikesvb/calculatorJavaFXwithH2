@@ -46,6 +46,7 @@ public class MainController {
     Boolean flagEqualsAfterSendOperation = false;
 
     String actionOfOperation;
+    String preOperation;
     Double result = 0D;
     Double preResult= 0D;
     StringBuilder stringInputNumber = new StringBuilder();
@@ -233,6 +234,7 @@ public class MainController {
     private void clearAllAction() {
         cursor=0;
         actionOfOperation="";
+        preOperation="";
         result=0D;
         preResult= 0D;
 
@@ -276,13 +278,13 @@ public class MainController {
 
         if (stringInputNumber.length()==0)return;
 
-
         flagSearchOperation=true;
 
         if(flagOperation==false) {
             Integer newcursor = stringInputNumber.length();
 
             if (newcursor != cursor) {
+
                 preResult = Double.parseDouble(stringInputNumber.substring(cursor, newcursor));
                 cursor = newcursor+action.length();
             }
@@ -299,6 +301,7 @@ public class MainController {
                     stringInputNumber.append(action);
                     textMonitor.setText(textMonitor.getText() + action);
                 }
+
             }
 
             if(flagFirstOperation ){
@@ -359,7 +362,7 @@ public class MainController {
 
                 }
 
-                if (action.equals("=") || action.equals("%")) {
+                if (action.equals("=")|| action.equals("√") || action.equals("%")) {
                     textMonitor.setText(textMonitor.getText() + result.toString());
 
                 }
@@ -374,23 +377,28 @@ public class MainController {
 
             }
 
-
-
         }else{
 
-
             Integer count = textMonitor.getText().length();
-            textMonitor.setText(textMonitor.getText().substring(0,count-1) + action);
-            stringInputNumber.delete(stringInputNumber.length()-1,stringInputNumber.length());
+            textMonitor.setText(textMonitor.getText().substring(0,count-preOperation.length()) + action);
+            stringInputNumber.delete(stringInputNumber.length()-preOperation.length(),stringInputNumber.length());
             stringInputNumber.append(action);
+            cursor=cursor-preOperation.length()+action.length();
 
-            if (action.equals("=")){
+            if (action.equals("=") || action.equals("√")){
                 flagOperation=false;
-                flagEqualsAfterSendOperation=true;
-                insertAction("=");
+                if (action.equals("="))flagEqualsAfterSendOperation=true;
+
+                if(action.equals("√")){
+                    textMonitor.setText(textMonitor.getText().substring(0,count-preOperation.length()));
+                    stringInputNumber.delete(stringInputNumber.length()-preOperation.length(),stringInputNumber.length());
+                    cursor=cursor-preOperation.length();
+                }
+
+                insertAction(action);
             }
         }
-
+        preOperation=action;
     }
 
     public void alertAbout(){
